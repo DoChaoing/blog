@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubernetes 简介 - 我的技术博客</title>
+    <title>构建 K8s 自定义控制器：Operator 模式实战 - 我的技术博客</title>
     <link rel="stylesheet" href="../style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -16,42 +18,65 @@
     </header>
     <main class="container">
         <article class="post-full">
-            <h1>Kubernetes 简介</h1>
+            <h1>构建 K8s 自定义控制器：Operator 模式实战</h1>
             <p class="post-meta">发布于 <time datetime="2024-07-27">2024年7月27日</time> | 云原生</p>
             <div class="post-content">
-                <p>Kubernetes，也常被称为 K8s，是一个由 Google 设计并捐赠给云原生计算基金会 (CNCF) 的开源容器编排系统。它的目标是自动化部署、扩展和管理容器化应用程序。</p>
+                <p>Kubernetes 的强大之处不仅在于其内置的资源类型（如 Pod, Deployment），更在于其卓越的可扩展性。通过 Operator 模式，我们可以将特定应用的运维知识编码成一个在集群中运行的自动化控制器。本文将介绍 Operator 模式的核心概念，并展示如何使用 Operator SDK (Go) 来构建一个自定义控制器。</p>
                 
-                <h2>为什么需要 Kubernetes？</h2>
-                <p>在现代云原生应用中，容器技术（如 Docker）使得应用的打包和分发变得非常简单。然而，当应用规模扩大，容器数量增多时，手动管理这些容器的生命周期、网络、存储和扩展性会变得极其复杂。Kubernetes 正是为解决这些问题而生。</p>
+                <h2>Operator 模式与 CRD</h2>
+                <p><strong>Operator 模式</strong> 是一种将人类运维知识（如何部署、管理、扩展一个应用）代码化的方法。它由一个自定义控制器和一个或多个自定义资源定义 (CRD) 组成。</p>
+                <p><strong>CRD (Custom Resource Definition)</strong> 允许我们向 Kubernetes API 中添加新的资源类型。例如，我们可以创建一个 `AppService` 类型的资源，它可能封装了一个 Deployment、一个 Service 和一个 Ingress。</p>
+                <p>控制器的工作就是 watch 这些自定义资源的变化，并根据预设的逻辑，确保集群的实际状态（Current State）与用户在资源中定义的期望状态（Desired State）保持一致。这个过程被称为"Reconcile Loop"（调和循环）。</p>
                 
-                <h2>核心概念</h2>
-                <p>理解 Kubernetes 需要先了解它的一些核心概念：</p>
-                <ul>
-                    <li><strong>Pod</strong>：Pod 是 Kubernetes 中可以创建和管理的最小部署单元。一个 Pod 包含一个或多个容器，这些容器共享存储、网络资源。</li>
-                    <li><strong>Node</strong>：一个 Node 是 K8s 集群中的一个工作机器，可以是物理机或虚拟机。每个 Node 上都运行着 Kubelet，一个负责管理 Pod 和容器的代理。</li>
-                    <li><strong>Service</strong>：Service 是一种将运行在一组 Pods 上的应用程序公开为网络服务的抽象方法。Service 为 Pods 提供了一个稳定的入口地址。</li>
-                    <li><strong>Deployment</strong>：Deployment 为 Pods 和 ReplicaSets 提供了一个声明式更新的方法。你只需要在 Deployment 中描述你期望的状态，K8s 就会帮你将当前状态调整到期望状态。</li>
-                    <li><strong>Namespace</strong>：命名空间用于在同一个物理集群上支持多个虚拟集群。它可以将集群资源划分为多个逻辑单元。</li>
-                </ul>
+                <h2>使用 Operator SDK (Go)</h2>
+                <p>Operator SDK 是一个用于快速构建 Operator 的框架。以下是创建一个基本 Operator 的简化流程：</p>
+                
+                <h3>1. 初始化项目</h3>
+                <p>首先，安装 Operator SDK CLI 并初始化一个新项目。</p>
+                <pre><code>
+# Create a new project directory
+mkdir my-operator && cd my-operator
 
-                <h2>Kubernetes 架构</h2>
-                <p>一个 Kubernetes 集群由一组 Master 节点和一组 Node 节点组成。</p>
-                <p><strong>Master 组件</strong>（控制平面）负责管理整个集群，包括：</p>
-                <ul>
-                    <li>`kube-apiserver`：集群的统一入口，提供 API 服务。</li>
-                    <li>`etcd`：一个高可用的键值存储系统，用于保存集群的所有状态数据。</li>
-                    <li>`kube-scheduler`：负责 Pod 的调度，决定将 Pod 放在哪个 Node 上运行。</li>
-                    <li>`kube-controller-manager`：运行着各种控制器，负责维护集群的状态。</li>
-                </ul>
-                <p><strong>Node 组件</strong>（工作节点）负责运行工作负载：</p>
-                <ul>
-                    <li>`Kubelet`：与 Master 节点通信，并管理本节点上的 Pod。</li>
-                    <li>`Kube-proxy`：负责为 Service 提供集群内部的服务发现和负载均衡。</li>
-                    <li>容器运行时（如 Docker）：负责运行容器。</li>
-                </ul>
+# Initialize the project
+operator-sdk init --domain my.domain --repo github.com/my/operator
+                </code></pre>
 
+                <h3>2. 创建 API 和控制器</h3>
+                <p>接下来，创建一个新的 API（它会自动生成 CRD 清单文件）和一个关联的控制器。</p>
+                <pre><code>
+# Create the AppService API and Controller
+operator-sdk create api --group myapp --version v1alpha1 --kind AppService --resource --controller
+                </code></pre>
+                <p>这将在 `api/` 目录下生成资源定义，在 `controllers/` 目录下生成控制器骨架。</p>
+                
+                <h3>3. 实现调和逻辑</h3>
+                <p>核心工作是在 `controllers/appservice_controller.go` 文件中实现 `Reconcile` 方法。这个方法会在 `AppService` 资源发生变化时被调用。</p>
+                <pre><code>
+// controllers/appservice_controller.go
+
+func (r *AppServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+    log := log.FromContext(ctx)
+    
+    var appService myappv1alpha1.AppService
+    if err := r.Get(ctx, req.NamespacedName, &appService); err != nil {
+        log.Error(err, "unable to fetch AppService")
+        return ctrl.Result{}, client.IgnoreNotFound(err)
+    }
+
+    // 1. 根据 appService.Spec 定义一个 Deployment
+    // 2. 检查 Deployment 是否存在，不存在则创建
+    // 3. 如果存在，检查是否需要更新（例如镜像版本）
+    // 4. ... 对 Service, Ingress 等做同样处理
+    // 5. 更新 appService.Status
+
+    log.Info("Reconcile loop finished for AppService", "name", appService.Name)
+    return ctrl.Result{}, nil
+}
+                </code></pre>
+                <p>在调和循环中，我们获取 `AppService` 实例，然后根据它的 `spec` 字段来创建或更新关联的子资源（如 Deployment），并最终更新 `status` 字段以反映当前状态。</p>
+                
                 <h2>总结</h2>
-                <p>Kubernetes 已经成为云原生时代容器编排的事实标准。它提供了一个强大而灵活的平台来运行分布式系统。虽然入门时概念较多，但一旦掌握，它将极大地提升应用部署和管理的效率。</p>
+                <p>Operator 模式是扩展 Kubernetes 功能、实现"应用即服务"的关键。通过将运维逻辑自动化，Operator 极大地降低了复杂应用在 Kubernetes 上部署和管理的难度。虽然构建一个生产级别的 Operator 充满挑战，但 Operator SDK 等工具的出现已大大降低了入门门槛。</p>
             </div>
         </article>
         <a href="../index.html" class="back-to-home">&larr; 返回首页</a>
