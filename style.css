@@ -1,0 +1,139 @@
+/* General Body Styles */
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    background: #333;
+    color: #fff;
+    padding: 2rem 0;
+    text-align: center;
+    border-bottom: #0779e4 3px solid;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+header p {
+    font-size: 1.2rem;
+}
+
+/* Main Content */
+main {
+    padding: 20px 0;
+}
+
+/* Post List */
+.post-list .post-item {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.post-list .post-item:hover {
+    transform: translateY(-5px);
+}
+
+.post-list .post-item h2 a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 700;
+}
+
+.post-list .post-item h2 a:hover {
+    color: #0779e4;
+}
+
+.post-meta {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+/* Article Page */
+.post-full {
+    background: #fff;
+    padding: 30px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+.post-full h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid #f4f4f4;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.post-full .post-content {
+    margin-top: 20px;
+}
+
+.post-full .post-content h2 {
+    color: #0779e4;
+    font-size: 1.8rem;
+}
+
+.post-full .post-content p {
+    margin-bottom: 15px;
+}
+
+.post-full .post-content code {
+    background: #eee;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.post-full .post-content pre {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.post-full .post-content pre code {
+    background: none;
+    padding: 0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    background: #333;
+    color: #fff;
+}
+
+/* Back to Home Link */
+.back-to-home {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #0779e4;
+    font-weight: bold;
+}
+
+.back-to-home:hover {
+    text-decoration: underline;
+} 

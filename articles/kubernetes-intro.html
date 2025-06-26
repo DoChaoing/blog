@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes 简介 - 我的技术博客</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>我的技术博客</h1>
+            <p>分享关于 Java, Go, 云原生等技术的文章</p>
+        </div>
+    </header>
+    <main class="container">
+        <article class="post-full">
+            <h1>Kubernetes 简介</h1>
+            <p class="post-meta">发布于 <time datetime="2024-07-27">2024年7月27日</time> | 云原生</p>
+            <div class="post-content">
+                <p>Kubernetes，也常被称为 K8s，是一个由 Google 设计并捐赠给云原生计算基金会 (CNCF) 的开源容器编排系统。它的目标是自动化部署、扩展和管理容器化应用程序。</p>
+                
+                <h2>为什么需要 Kubernetes？</h2>
+                <p>在现代云原生应用中，容器技术（如 Docker）使得应用的打包和分发变得非常简单。然而，当应用规模扩大，容器数量增多时，手动管理这些容器的生命周期、网络、存储和扩展性会变得极其复杂。Kubernetes 正是为解决这些问题而生。</p>
+                
+                <h2>核心概念</h2>
+                <p>理解 Kubernetes 需要先了解它的一些核心概念：</p>
+                <ul>
+                    <li><strong>Pod</strong>：Pod 是 Kubernetes 中可以创建和管理的最小部署单元。一个 Pod 包含一个或多个容器，这些容器共享存储、网络资源。</li>
+                    <li><strong>Node</strong>：一个 Node 是 K8s 集群中的一个工作机器，可以是物理机或虚拟机。每个 Node 上都运行着 Kubelet，一个负责管理 Pod 和容器的代理。</li>
+                    <li><strong>Service</strong>：Service 是一种将运行在一组 Pods 上的应用程序公开为网络服务的抽象方法。Service 为 Pods 提供了一个稳定的入口地址。</li>
+                    <li><strong>Deployment</strong>：Deployment 为 Pods 和 ReplicaSets 提供了一个声明式更新的方法。你只需要在 Deployment 中描述你期望的状态，K8s 就会帮你将当前状态调整到期望状态。</li>
+                    <li><strong>Namespace</strong>：命名空间用于在同一个物理集群上支持多个虚拟集群。它可以将集群资源划分为多个逻辑单元。</li>
+                </ul>
+
+                <h2>Kubernetes 架构</h2>
+                <p>一个 Kubernetes 集群由一组 Master 节点和一组 Node 节点组成。</p>
+                <p><strong>Master 组件</strong>（控制平面）负责管理整个集群，包括：</p>
+                <ul>
+                    <li>`kube-apiserver`：集群的统一入口，提供 API 服务。</li>
+                    <li>`etcd`：一个高可用的键值存储系统，用于保存集群的所有状态数据。</li>
+                    <li>`kube-scheduler`：负责 Pod 的调度，决定将 Pod 放在哪个 Node 上运行。</li>
+                    <li>`kube-controller-manager`：运行着各种控制器，负责维护集群的状态。</li>
+                </ul>
+                <p><strong>Node 组件</strong>（工作节点）负责运行工作负载：</p>
+                <ul>
+                    <li>`Kubelet`：与 Master 节点通信，并管理本节点上的 Pod。</li>
+                    <li>`Kube-proxy`：负责为 Service 提供集群内部的服务发现和负载均衡。</li>
+                    <li>容器运行时（如 Docker）：负责运行容器。</li>
+                </ul>
+
+                <h2>总结</h2>
+                <p>Kubernetes 已经成为云原生时代容器编排的事实标准。它提供了一个强大而灵活的平台来运行分布式系统。虽然入门时概念较多，但一旦掌握，它将极大地提升应用部署和管理的效率。</p>
+            </div>
+        </article>
+        <a href="../index.html" class="back-to-home">&larr; 返回首页</a>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 我的技术博客. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go 协程入门 - 我的技术博客</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>我的技术博客</h1>
+            <p>分享关于 Java, Go, 云原生等技术的文章</p>
+        </div>
+    </header>
+    <main class="container">
+        <article class="post-full">
+            <h1>Go 协程入门</h1>
+            <p class="post-meta">发布于 <time datetime="2024-07-29">2024年7月29日</time> | Go</p>
+            <div class="post-content">
+                <p>Go 语言在设计之初就将并发编程作为其核心特性之一。其并发模型的核心就是 Goroutine（协程）和 Channel（通道）。与传统的操作系统线程相比，Goroutine 非常轻量级，可以在单个线程中运行成千上万个 Goroutine，这使得 Go 在高并发场景下表现出色。</p>
+                
+                <h2>什么是 Goroutine？</h2>
+                <p>Goroutine 是由 Go 运行时管理的轻量级线程。当你创建一个 Goroutine 时，它会与其它 Goroutine 在同一个地址空间中并发执行。启动一个新的 Goroutine 非常简单，只需要在函数或方法调用前加上 `go` 关键字即可。</p>
+                <pre><code>
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func say(s string) {
+    for i := 0; i < 5; i++ {
+        time.Sleep(100 * time.Millisecond)
+        fmt.Println(s)
+    }
+}
+
+func main() {
+    go say("world")
+    say("hello")
+}
+                </code></pre>
+                <p>在上面的例子中，`go say("world")` 启动了一个新的 Goroutine。`main` 函数和 `say("world")` Goroutine 会并发执行。你会看到 "hello" 和 "world" 交替输出。</p>
+
+                <h2>Goroutine 的优势</h2>
+                <ul>
+                    <li><strong>轻量级</strong>：一个 Goroutine 的栈空间初始时只有几 KB，可以根据需要动态伸缩，因此可以轻松创建数十万个 Goroutine。</li>
+                    <li><strong>调度开销小</strong>：Go 运行时包含了自己的调度器，它使用 m:n 调度技术（将 m 个 Goroutine 调度到 n 个操作系统线程上执行）。上下文切换的成本远低于线程。</li>
+                    <li><strong>通信优于共享内存</strong>：Go 提倡 "不要通过共享内存来通信，而要通过通信来共享内存" 的哲学，通过 Channel 来实现 Goroutine 之间的安全通信。</li>
+                </ul>
+
+                <h2>总结</h2>
+                <p>Goroutine 是 Go 语言并发编程的基石。通过简单地使用 `go` 关键字，你就可以创建出能够并发执行的任务，而 Go 运行时会帮你处理复杂的调度问题。要真正掌握 Go 的并发，还需要深入学习 Channel 的使用，以实现 Goroutine 之间安全、高效的数据交换。</p>
+            </div>
+        </article>
+        <a href="../index.html" class="back-to-home">&larr; 返回首页</a>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 我的技术博客. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html> 

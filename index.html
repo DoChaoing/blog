@@ -1,1 +1,44 @@
-Hello World
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的技术博客</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>我的技术博客</h1>
+            <p>分享关于 Java, Go, 云原生等技术的文章</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="post-list">
+            <article class="post-item">
+                <h2><a href="articles/go-routines.html">Go 协程入门</a></h2>
+                <p class="post-meta">发布于 <time datetime="2024-07-29">2024年7月29日</time> | Go</p>
+                <p>本文将介绍 Go 语言中并发编程的核心概念——协程（Goroutine），以及如何使用它们来构建高效的并发程序。</p>
+            </article>
+            <article class="post-item">
+                <h2><a href="articles/java-concurrency.html">Java 并发编程基础</a></h2>
+                <p class="post-meta">发布于 <time datetime="2024-07-28">2024年7月28日</time> | Java</p>
+                <p>Java 提供了丰富的工具和类库来支持并发编程。本文将探讨 Java 并发的基础知识，包括线程、锁和并发集合。</p>
+            </article>
+            <article class="post-item">
+                <h2><a href="articles/kubernetes-intro.html">Kubernetes 简介</a></h2>
+                <p class="post-meta">发布于 <time datetime="2024-07-27">2024年7月27日</time> | 云原生</p>
+                <p>Kubernetes 是一个开源的容器编排系统，可以自动化部署、扩展和管理容器化应用程序。本文将带你了解 Kubernetes 的基本概念和架构。</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 我的技术博客. All Rights Reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
