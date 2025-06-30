@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright 测试使用说明 - 我的技术博客</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="three-canvas"></canvas>
+    <div id="particles-js"></div>
+    <header>
+        <div class="container">
+            <h1>我的技术博客</h1>
+            <p>分享关于 Java, Go, 云原生等技术的文章</p>
+        </div>
+    </header>
+    <main class="container">
+        <article class="post-full">
+            <h1>Playwright 测试使用说明</h1>
+            <p class="post-meta">发布于 <time datetime="2024-07-31">2024年7月31日</time> | 自动化测试</p>
+            <div class="post-content">
+                <p>Playwright 是微软开发的一个强大的端到端测试框架，支持多种浏览器（Chromium、Firefox、WebKit），并提供了现代化的 API 和丰富的功能。本文将详细介绍 Playwright 的安装、配置、使用方法和最佳实践，重点介绍 Python 版本的使用。</p>
+                
+                <h2>Python vs Node.js 版本对比</h2>
+                <p>Playwright 支持多种编程语言，其中 Python 和 Node.js 是最常用的两个版本。以下是它们的主要区别：</p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>特性</th>
+                            <th>Python 版本</th>
+                            <th>Node.js 版本</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>安装命令</strong></td>
+                            <td><code>pip install playwright</code></td>
+                            <td><code>npm install -D @playwright/test</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>浏览器安装</strong></td>
+                            <td><code>playwright install</code></td>
+                            <td><code>npx playwright install</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>配置文件</strong></td>
+                            <td><code>playwright.config.py</code></td>
+                            <td><code>playwright.config.ts</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>测试文件扩展名</strong></td>
+                            <td><code>.py</code></td>
+                            <td><code>.spec.ts</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>导入语法</strong></td>
+                            <td><code>from playwright.sync_api import sync_playwright</code></td>
+                            <td><code>import { test, expect } from '@playwright/test'</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>异步处理</strong></td>
+                            <td>支持同步和异步 API</td>
+                            <td>原生异步支持</td>
+                        </tr>
+                        <tr>
+                            <td><strong>类型提示</strong></td>
+                            <td>需要额外安装 mypy</td>
+                            <td>原生 TypeScript 支持</td>
+                        </tr>
+                        <tr>
+                            <td><strong>生态系统</strong></td>
+                            <td>Python 测试生态（pytest）</td>
+                            <td>Node.js 测试生态</td>
+                        </tr>
+                        <tr>
+                            <td><strong>性能</strong></td>
+                            <td>稍慢（Python 解释器）</td>
+                            <td>更快（V8 引擎）</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>1. Python 版本安装与初始化</h2>
+                <h3>1.1 安装 Playwright</h3>
+                <p>使用 pip 安装 Playwright：</p>
+                <pre><code>
+# 安装 Playwright
+pip install playwright
+
+# 或者使用 conda
+conda install -c conda-forge playwright
+
+# 或者指定版本
+pip install playwright==1.40.0
+                </code></pre>
+                
+                <h3>1.2 安装浏览器</h3>
+                <p>安装完成后，需要下载浏览器二进制文件：</p>
+                <pre><code>
+# 安装所有浏览器
+playwright install
+
+# 安装特定浏览器
+playwright install chromium
+playwright install firefox
+playwright install webkit
+
+# 安装系统依赖（Linux）
+playwright install-deps
+                </code></pre>
+
+                <h3>1.3 初始化项目</h3>
+                <p>创建 Playwright 项目结构：</p>
+                <pre><code>
+# 创建项目目录
+mkdir my-playwright-project
+cd my-playwright-project
+
+# 初始化项目
+playwright init
+
+# 这会创建以下文件：
+# - playwright.config.py
+# - tests/
+# - requirements.txt
+# - .gitignore
+                </code></pre>
+
+                <h2>2. Python 项目配置</h2>
+                <h3>2.1 配置文件</h3>
+                <p>Python 版本的配置文件使用 `playwright.config.py`：</p>
+                <pre><code>
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://playwright.dev/")
+    page.get_by_role("link", name="Get started").click()
+    page.get_by_role("link", name="Installation").click()
+    
+    # ---------------------
+    context.close()
+    browser.close()
+
+with sync_playwright() as playwright:
+    run(playwright)
+                </code></pre>
+
+                <h3>2.2 使用 pytest 配置</h3>
+                <p>结合 pytest 使用 Playwright：</p>
+                <pre><code>
+# playwright.config.py
+import pytest
+from playwright.sync_api import sync_playwright
+
+def pytest_configure(config):
+    """配置 pytest"""
+    config.addinivalue_line(
+        "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
+    )
+
+@pytest.fixture(scope="session")
+def browser_context_args(browser_context_args):
+    """配置浏览器上下文参数"""
+    return {
+        **browser_context_args,
+        "viewport": {
+            "width": 1920,
+            "height": 1080,
+        },
+        "ignore_https_errors": True,
+    }
+
+@pytest.fixture(scope="session")
+def browser_type_launch_args():
+    """配置浏览器启动参数"""
+    return {
+        "headless": False,
+        "slow_mo": 1000,
+    }
+                </code></pre>
+
+                <h2>3. Python 版本编写测试</h2>
+                <h3>3.1 基本测试结构</h3>
+                <p>创建一个简单的 Python 测试文件：</p>
+                <pre><code>
+# test_basic.py
+import pytest
+from playwright.sync_api import Page, expect
+
+def test_basic(page: Page):
+    page.goto("https://playwright.dev/")
+    title = page.title()
+    assert "Playwright" in title
+
+def test_navigation(page: Page):
+    page.goto("https://playwright.dev/")
+    page.get_by_role("link", name="Get started").click()
+    expect(page).to_have_url("https://playwright.dev/docs/intro")
+                </code></pre>
+
+                <h3>3.2 页面交互</h3>
+                <p>Python 版本的页面交互 API：</p>
+                <pre><code>
+def test_user_interactions(page: Page):
+    # 导航到页面
+    page.goto("https://example.com")
+    
+    # 点击元素
+    page.click("button[type='submit']")
+    
+    # 填写表单
+    page.fill("input[name='username']", "testuser")
+    page.fill("input[name='password']", "password123")
+    
+    # 选择下拉框
+    page.select_option("select[name='country']", "China")
+    
+    # 勾选复选框
+    page.check("input[type='checkbox']")
+    
+    # 上传文件
+    page.set_input_files("input[type='file']", "path/to/file.jpg")
+    
+    # 使用更现代的 API
+    page.get_by_label("Username").fill("testuser")
+    page.get_by_role("button", name="Submit").click()
+                </code></pre>
+
+                <h3>3.3 等待和断言</h3>
+                <p>Python 版本的等待和断言方法：</p>
+                <pre><code>
+def test_waiting_and_assertions(page: Page):
+    page.goto("https://example.com")
+    
+    # 等待元素出现
+    page.wait_for_selector(".loading-spinner", state="hidden")
+    
+    # 等待网络请求完成
+    with page.expect_response(lambda response: 
+        "/api/data" in response.url and response.status == 200
+    ):
+        page.click("button[data-action='load-data']")
+    
+    # 断言元素存在
+    expect(page.locator(".success-message")).to_be_visible()
+    
+    # 断言文本内容
+    expect(page.locator("h1")).to_have_text("Welcome")
+    
+    # 断言 URL
+    expect(page).to_have_url(re.compile(r".*dashboard"))
+    
+    # 断言页面标题
+    expect(page).to_have_title(re.compile(r".*Home"))
+                </code></pre>
+
+                <h2>4. Python 版本高级功能</h2>
+                <h3>4.1 页面对象模式</h3>
+                <p>Python 版本的页面对象模式实现：</p>
+                <pre><code>
+# pages/login_page.py
+from playwright.sync_api import Page, Locator
+
+class LoginPage:
+    def __init__(self, page: Page):
+        self.page = page
+        self.username_input = page.locator("[data-testid='username']")
+        self.password_input = page.locator("[data-testid='password']")
+        self.login_button = page.locator("[data-testid='login-button']")
+        self.error_message = page.locator("[data-testid='error-message']")
+    
+    def goto(self):
+        self.page.goto("/login")
+    
+    def login(self, username: str, password: str):
+        self.username_input.fill(username)
+        self.password_input.fill(password)
+        self.login_button.click()
+    
+    def get_error_message(self) -> Locator:
+        return self.error_message
+
+# test_login.py
+import pytest
+from playwright.sync_api import Page, expect
+from pages.login_page import LoginPage
+
+def test_login_failure(page: Page):
+    login_page = LoginPage(page)
+    login_page.goto()
+    login_page.login("testuser", "wrongpassword")
+    
+    error_message = login_page.get_error_message()
+    expect(error_message).to_be_visible()
+    expect(error_message).to_have_text("Invalid credentials")
+                </code></pre>
+
+                <h3>4.2 pytest 夹具</h3>
+                <p>使用 pytest 夹具简化测试：</p>
+                <pre><code>
+import pytest
+from playwright.sync_api import Page, expect
+
+@pytest.fixture
+def authenticated_page(page: Page):
+    """创建已认证的页面夹具"""
+    page.goto("/login")
+    page.fill("[data-testid='username']", "testuser")
+    page.fill("[data-testid='password']", "password123")
+    page.click("[data-testid='login-button']")
+    page.wait_for_url("/dashboard")
+    return page
+
+@pytest.fixture
+def test_user():
+    """测试用户数据夹具"""
+    return {
+        "username": "testuser",
+        "password": "password123",
+        "email": "test@example.com"
+    }
+
+def test_authenticated_user_can_access_dashboard(authenticated_page: Page):
+    expect(authenticated_page.locator(".dashboard-content")).to_be_visible()
+
+def test_user_profile(authenticated_page: Page, test_user):
+    authenticated_page.goto("/profile")
+    expect(authenticated_page.locator(".user-email")).to_have_text(test_user["email"])
+                </code></pre>
+
+                <h3>4.3 网络拦截</h3>
+                <p>Python 版本的网络拦截：</p>
+                <pre><code>
+def test_network_interception(page: Page):
+    # 拦截 API 请求
+    def handle_route(route):
+        if "/api/users" in route.request.url:
+            route.fulfill(
+                status=200,
+                content_type="application/json",
+                body='[{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Smith"}]'
+            )
+        else:
+            route.continue_()
+    
+    page.route("**/*", handle_route)
+    
+    page.goto("/users")
+    expect(page.locator(".user-list")).to_contain_text("John Doe")
+                </code></pre>
+
+                <h2>5. Python 版本调试与故障排除</h2>
+                <h3>5.1 调试模式</h3>
+                <p>Python 版本的调试方法：</p>
+                <pre><code>
+# 以调试模式运行测试
+pytest --headed --slowmo=1000
+
+# 在特定浏览器中调试
+pytest --browser chromium
+
+# 使用 pytest-playwright 插件
+pytest --headed --browser chromium --slowmo=1000
+
+# 生成测试代码
+playwright codegen https://example.com
+
+# 启动 Playwright Inspector
+playwright show-inspector
+                </code></pre>
+
+                <h3>5.2 生成测试代码</h3>
+                <p>使用 Playwright Inspector 生成 Python 代码：</p>
+                <pre><code>
+# 启动 Playwright Inspector 并生成 Python 代码
+playwright codegen --target python https://example.com
+
+# 生成带有页面对象模式的代码
+playwright codegen --target python --save-storage=auth.json https://example.com
+                </code></pre>
+
+                <h3>5.3 查看测试报告</h3>
+                <p>生成和查看测试报告：</p>
+                <pre><code>
+# 运行测试并生成 HTML 报告
+pytest --html=report.html
+
+# 运行测试并生成 JUnit 报告
+pytest --junitxml=report.xml
+
+# 使用 pytest-playwright 的报告
+pytest --browser chromium --headed --slowmo=1000
+                </code></pre>
+
+                <h2>6. Python 版本持续集成</h2>
+                <h3>6.1 GitHub Actions 配置</h3>
+                <p>Python 版本的 GitHub Actions 配置：</p>
+                <pre><code>
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Install Playwright Browsers
+      run: playwright install --with-deps
+    
+    - name: Run Playwright tests
+      run: pytest
+    
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: |
+          playwright-report/
+          test-results/
+        retention-days: 30
+                </code></pre>
+
+                <h3>6.2 requirements.txt 配置</h3>
+                <p>Python 项目的依赖配置：</p>
+                <pre><code>
+# requirements.txt
+playwright==1.40.0
+pytest==7.4.0
+pytest-playwright==0.4.0
+pytest-html==3.2.0
+pytest-xdist==3.3.1
+                </code></pre>
+
+                <h2>7. Python vs Node.js 版本选择建议</h2>
+                <h3>7.1 选择 Python 版本的情况</h3>
+                <ul>
+                    <li><strong>团队主要使用 Python</strong>：如果团队已经使用 Python 进行开发，选择 Python 版本可以保持技术栈一致性。</li>
+                    <li><strong>需要与 Python 生态集成</strong>：如果需要与 Django、Flask、FastAPI 等 Python 框架集成。</li>
+                    <li><strong>数据科学项目</strong>：如果项目涉及数据分析、机器学习等 Python 擅长的领域。</li>
+                    <li><strong>同步 API 偏好</strong>：Python 版本提供了更直观的同步 API。</li>
+                </ul>
+
+                <h3>7.2 选择 Node.js 版本的情况</h3>
+                <ul>
+                    <li><strong>前端项目</strong>：如果主要测试前端应用，Node.js 版本与前端技术栈更匹配。</li>
+                    <li><strong>性能要求高</strong>：Node.js 版本在性能上略优于 Python 版本。</li>
+                    <li><strong>TypeScript 支持</strong>：如果需要强类型支持，Node.js 版本的 TypeScript 支持更完善。</li>
+                    <li><strong>异步编程</strong>：如果团队更熟悉异步编程模式。</li>
+                </ul>
+
+                <h2>8. Python 版本最佳实践</h2>
+                <ul>
+                    <li><strong>使用虚拟环境</strong>：使用 venv 或 conda 创建隔离的 Python 环境。</li>
+                    <li><strong>类型提示</strong>：使用 mypy 进行类型检查，提高代码质量。</li>
+                    <li><strong>pytest 集成</strong>：充分利用 pytest 的夹具和插件功能。</li>
+                    <li><strong>页面对象模式</strong>：将页面交互逻辑封装在类中。</li>
+                    <li><strong>配置管理</strong>：使用环境变量管理不同环境的配置。</li>
+                    <li><strong>测试数据管理</strong>：使用 pytest 夹具或工厂模式管理测试数据。</li>
+                </ul>
+
+                <h2>9. 常见问题与解决方案</h2>
+                <h3>9.1 Python 版本特有问题</h3>
+                <p>Python 版本可能遇到的问题：</p>
+                <pre><code>
+# 问题：浏览器启动失败
+# 解决方案：安装系统依赖
+playwright install-deps
+
+# 问题：导入错误
+# 解决方案：确保使用正确的导入方式
+from playwright.sync_api import sync_playwright  # 同步 API
+from playwright.async_api import async_playwright  # 异步 API
+
+# 问题：pytest 集成问题
+# 解决方案：安装 pytest-playwright 插件
+pip install pytest-playwright
+                </code></pre>
+
+                <h2>总结</h2>
+                <p>Playwright 的 Python 版本提供了与 Node.js 版本相同的强大功能，同时保持了 Python 生态系统的优势。选择哪个版本主要取决于团队的技术栈和项目需求。无论选择哪个版本，Playwright 都能帮助您编写高质量的端到端测试，提高开发效率和代码质量。</p>
+            </div>
+        </article>
+        <a href="../index.html" class="back-to-home">&larr; 返回首页</a>
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 我的技术博客. All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="../particles.js"></script>
+    <script src="../app.js"></script>
+    <script src="../3d-animation.js"></script>
+</body>
+</html> 
