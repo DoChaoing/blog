@@ -16,133 +16,207 @@
     z-index: -2; /* Move it further back */
 }
 
-/*--- Hacker Theme Variables ---*/
+/*--- Modern Theme Variables ---*/
 :root {
-    --background-color: #0d1117;
-    --text-color: #c9d1d9;
-    --header-color: #58a6ff;
-    --link-color: #1f6feb;
-    --accent-color: #2ea043;
-    --border-color: #30363d;
-    --code-bg-color: #010409;
-    --code-text-color: #c9d1d9;
+    --primary-font: 'Roboto Mono', monospace;
+    --background-start: #121828;
+    --background-end: #0f121e;
+    --card-bg: rgba(22, 29, 47, 0.5);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --text-color: #E0E0E0;
+    --header-color: #FFFFFF;
+    --accent-gradient: linear-gradient(90deg, #3a8dff, #6b47ff, #ad3bff);
+    --accent-color-1: #3a8dff;
+    --accent-color-2: #ad3bff;
 }
 
-/*--- General Body Styles ---*/
-body {
-    font-family: 'Roboto Mono', monospace;
-    line-height: 1.7;
+/*--- Global Styles & Backgrounds ---*/
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: var(--background-color);
+}
+
+body {
+    font-family: var(--primary-font);
+    line-height: 1.7;
+    background-color: var(--background-start);
     color: var(--text-color);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-image: linear-gradient(rgba(13, 17, 23, 0.8), rgba(13, 17, 23, 0.8)), url('https://images.pexels.com/photos/163143/sackcloth-sackcloth-textured-laptop-sackcloth-woven-163143.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#three-canvas {
+    display: none; /* Hide the old 3D animation */
 }
 
 .container {
-    max-width: 800px;
+    max-width: 900px;
     margin: auto;
-    overflow: hidden;
     padding: 0 20px;
     width: 100%;
 }
 
-/*--- Header ---*/
-header {
-    background-color: rgba(13, 17, 23, 0.6); /* Apply frosted glass effect */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+/*--- Header & Footer (Glassmorphism) ---*/
+header, footer {
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--card-border);
+    position: relative;
+    z-index: 10;
     padding: 2rem 0;
-    text-align: left;
-    border-bottom: 1px solid rgba(48, 54, 61, 0.5); /* Semi-transparent border */
+    text-align: center;
+    margin: 20px;
+    border-radius: 15px;
+}
+
+header {
     margin-bottom: 2rem;
-    position: relative; /* Ensure it stays on top */
-    z-index: 1;
+}
+
+footer {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 header h1 {
-    margin: 0;
-    font-size: 2.2rem;
-    color: var(--header-color);
+    font-size: 2.8rem;
     font-weight: 700;
-    display: inline-block; /* Needed for cursor */
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
 }
 
 header p {
     font-size: 1.1rem;
     color: var(--text-color);
-    display: inline-block; /* Needed for cursor */
-    margin-top: 10px; /* Add some space */
 }
 
-/*--- Main Content & Post List ---*/
-main {
-    flex: 1;
-    padding: 20px 0;
+/*--- Post List & 3D Flip Card Effect ---*/
+.post-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 0;
 }
 
-.post-list .post-item {
-    background-color: rgba(13, 17, 23, 0.6); /* Slightly transparent background */
-    backdrop-filter: blur(10px); /* The frosted glass effect */
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
+.post-item {
+    background-color: transparent;
+    width: 100%;
+    min-height: 250px;
+    perspective: 1000px;
+    list-style: none; /* In case it's a list item */
+}
+
+.post-item-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+
+.post-item:hover .post-item-inner {
+    transform: rotateY(180deg);
+}
+
+.post-item-front, .post-item-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--card-border);
+    border-radius: 15px;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding: 25px;
-    margin-bottom: 25px;
-    border: 1px solid rgba(48, 54, 61, 0.5); /* Make border slightly transparent too */
-    border-radius: 6px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    position: relative; /* Ensure it stays on top */
-    z-index: 1;
 }
 
-.post-list .post-item:hover {
-    border-color: var(--link-color);
-    box-shadow: 0 0 15px rgba(31, 111, 235, 0.3);
+.post-item-back {
+    transform: rotateY(180deg);
 }
 
-.post-list .post-item h2 a {
+.post-item h2 a {
     text-decoration: none;
     color: var(--header-color);
     font-weight: 700;
     font-size: 1.5rem;
+    transition: color 0.3s;
 }
 
-.post-list .post-item h2 a:hover {
-    text-decoration: underline;
+.post-item h2 a:hover {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .post-meta {
-    color: #8b949e;
+    color: #a0a0a0;
     font-size: 0.85rem;
-    margin-bottom: 15px;
-    border-bottom: 1px dashed var(--border-color);
-    padding-bottom: 10px;
+    margin-top: 10px;
 }
 
-/*--- Article Page ---*/
+.post-item-back p {
+    margin-bottom: 20px;
+}
+
+.read-more-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    color: white;
+    background-image: var(--accent-gradient);
+    background-size: 200% auto;
+    transition: background-position 0.5s;
+}
+
+.read-more-btn:hover {
+    background-position: right center;
+}
+
+/*--- Article Page (to keep it consistent) ---*/
 .post-full {
-    background-color: rgba(13, 17, 23, 0.6); /* Slightly transparent background */
-    backdrop-filter: blur(10px); /* The frosted glass effect */
-    -webkit-backdrop-filter: blur(10px); /* For Safari */
-    padding: 30px;
-    margin-top: 20px;
-    border: 1px solid rgba(48, 54, 61, 0.5); /* Make border slightly transparent too */
-    border-radius: 6px;
-    position: relative; /* Ensure it stays on top */
-    z-index: 1;
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--card-border);
+    padding: 40px;
+    margin: 20px;
+    border-radius: 15px;
 }
 
 .post-full h1 {
-    font-size: 2.2rem;
-    color: var(--header-color);
-    border-bottom: 1px solid var(--border-color);
+    font-size: 2.5rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 1px solid var(--card-border);
     padding-bottom: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .post-full .post-content {
@@ -150,9 +224,9 @@ main {
 }
 
 .post-full .post-content h2 {
-    color: var(--accent-color);
+    color: var(--accent-color-1);
     font-size: 1.6rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--card-border);
     padding-bottom: 5px;
     margin-top: 30px;
 }
@@ -162,7 +236,7 @@ main {
 }
 
 .post-full .post-content a {
-    color: var(--link-color);
+    color: var(--accent-color-1);
     text-decoration: none;
 }
 .post-full .post-content a:hover {
@@ -179,8 +253,8 @@ main {
 }
 
 .post-full .post-content pre {
-    background: var(--code-bg-color);
-    border: 1px solid var(--border-color);
+    background: var(--background-end);
+    border: 1px solid var(--card-border);
     padding: 16px;
     border-radius: 6px;
     overflow-x: auto;
@@ -201,19 +275,21 @@ main {
     margin-bottom: 10px;
 }
 
-/*--- Footer ---*/
-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 40px;
-    background-color: rgba(13, 17, 23, 0.6); /* Apply frosted glass effect */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(48, 54, 61, 0.5); /* Semi-transparent border */
-    color: #8b949e;
-    font-size: 0.9rem;
-    position: relative; /* Ensure it stays on top */
-    z-index: 1;
+/*--- Responsive Design ---*/
+@media (max-width: 768px) {
+    header, footer, .post-full {
+        margin: 10px;
+    }
+    header h1 {
+        font-size: 2.2rem;
+    }
+    header p {
+        font-size: 1rem;
+    }
+    .post-list {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
 }
 
 /*--- Back to Home Link ---*/
@@ -221,7 +297,7 @@ footer {
     display: inline-block;
     margin-top: 30px;
     text-decoration: none;
-    color: var(--accent-color);
+    color: var(--accent-color-1);
     font-weight: bold;
     font-size: 1rem;
 }
@@ -305,11 +381,11 @@ footer {
 
 /* --- Typing Effect --- */
 .typing-cursor {
-  border-right: 0.15em solid var(--accent-color);
+  border-right: 0.15em solid var(--accent-color-1);
   animation: blink-caret .75s step-end infinite;
 }
 
 @keyframes blink-caret {
   from, to { border-color: transparent }
-  50% { border-color: var(--accent-color); }
+  50% { border-color: var(--accent-color-1); }
 } 

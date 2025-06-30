@@ -1,3 +1,11 @@
+/* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
+particlesJS.load('particles-js', 'particles.json', function() {
+  console.log('callback - particles.js config loaded');
+});
+
+// This file is for configuring particles.js
+// I'll be editing particles.json directly through the app logic now.
+
 particlesJS("particles-js", {
   "particles": {
     "number": {
@@ -8,7 +16,7 @@ particlesJS("particles-js", {
       }
     },
     "color": {
-      "value": "#2ea043" 
+      "value": "#ffffff"
     },
     "shape": {
       "type": "circle",
@@ -18,18 +26,13 @@ particlesJS("particles-js", {
       },
       "polygon": {
         "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
       }
     },
     "opacity": {
       "value": 0.5,
       "random": true,
       "anim": {
-        "enable": false,
+        "enable": true,
         "speed": 1,
         "opacity_min": 0.1,
         "sync": false
@@ -48,7 +51,7 @@ particlesJS("particles-js", {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#2ea043", 
+      "color": "#5e6a8b",
       "opacity": 0.4,
       "width": 1
     },
@@ -72,7 +75,7 @@ particlesJS("particles-js", {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "repulse"
+        "mode": "grab"
       },
       "onclick": {
         "enable": true,
@@ -82,7 +85,7 @@ particlesJS("particles-js", {
     },
     "modes": {
       "grab": {
-        "distance": 400,
+        "distance": 140,
         "line_linked": {
           "opacity": 1
         }

@@ -10,41 +10,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <canvas id="three-canvas"></canvas>
+    <!-- The new background -->
     <div id="particles-js"></div>
 
-    <header>
-        <div class="container">
+    <div class="container">
+        <header>
             <h1>我的技术博客</h1>
             <p>分享关于 Java, Go, 云原生等技术的文章</p>
-        </div>
-    </header>
+        </header>
 
-    <main class="container">
-        <section class="post-list">
-            <article class="post-item">
-                <h2><a href="articles/playwright-testing-guide.html">Playwright 测试使用说明</a></h2>
-                <p class="post-meta">发布于 <time datetime="2024-07-31">2024年7月31日</time> | 自动化测试</p>
-                <p>Playwright 是微软开发的一个强大的端到端测试框架，支持多种浏览器。本文将详细介绍 Playwright 的安装、配置、使用方法和最佳实践。</p>
-            </article>
-            <article class="post-item">
-                <h2><a href="articles/kubernetes-intro.html">Kubernetes 简介</a></h2>
-                <p class="post-meta">发布于 <time datetime="2024-07-28">2024年7月28日</time> | 云原生</p>
-                <p>本文是对 Kubernetes 的一个简单介绍，涵盖了它的核心概念，例如 Pod, Service, Deployment 等，帮助您快速入门云原生编排。</p>
-            </article>
-        </section>
-    </main>
+        <main>
+            <section class="post-list">
+                <article class="post-item">
+                    <div class="post-item-inner">
+                        <div class="post-item-front">
+                            <h2><a href="articles/playwright-testing-guide.html">Playwright 测试使用说明</a></h2>
+                            <p class="post-meta">发布于 <time datetime="2024-07-31">2024年7月31日</time></p>
+                        </div>
+                        <div class="post-item-back">
+                            <p>一个强大的端到端测试框架，支持多种浏览器和语言。</p>
+                            <a href="articles/playwright-testing-guide.html" class="read-more-btn">阅读更多</a>
+                        </div>
+                    </div>
+                </article>
 
-    <footer>
-        <div class="container">
+                <article class="post-item">
+                    <div class="post-item-inner">
+                        <div class="post-item-front">
+                            <h2><a href="articles/kubernetes-intro.html">Kubernetes 简介</a></h2>
+                            <p class="post-meta">发布于 <time datetime="2024-07-28">2024年7月28日</time></p>
+                        </div>
+                        <div class="post-item-back">
+                            <p>快速入门云原生编排，了解 Pod, Service, Deployment 等核心概念。</p>
+                            <a href="articles/kubernetes-intro.html" class="read-more-btn">阅读更多</a>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <footer>
             <p>&copy; 2024 我的技术博客. All Rights Reserved.</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- We only need particles.js now -->
     <script src="particles.js"></script>
     <script src="app.js"></script>
-    <script src="3d-animation.js"></script>
-    <script src="hacker-effect.js"></script>
 </body>
 </html>
